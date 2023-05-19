@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+  <title>Employee Directory</title>
+  <style>
+    .employee {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: antiquewhite;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" id="search" placeholder="Search by name">
+  <button onclick="searchEmployees()">Search</button>
+  <div id="results"></div>
+
+  <script>
+    
+var jsonData;
+
+function fetchJSONData(url) {
+  return fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      jsonData = data;
+      renderUI(jsonData);
+    })
+    .catch(error => {
+      console.log('Error fetching JSON data:', error);
+    });
+}
+
+function filterByName(name) {
+  var filtered = jsonData.employees.filter(function(employee) {
+    return employee.name && employee.name.toLowerCase().includes(name.toLowerCase());
+  });
+
+  return filtered;
+}
+
+function renderUI(data) {
+  var resultsContainer = document.getElementById('results');
+  resultsContainer.innerHTML = '';
+
+  data.employees.forEach(function(employee) {
+    var employeeContainer = document.createElement('div');
+    employeeContainer.className = 'employee';
+
+    var nameElement = document.createElement('h3');
+    nameElement.textContent = 'Name: ' + employee.name;
+    employeeContainer.appendChild(nameElement);
+
+    var designationElement = document.createElement('p');
+    designationElement.textContent = 'Designation: ' + (employee.designation || 'N/A');
+    employeeContainer.appendChild(designationElement);
+
+    var skillsElement = document.createElement('p');
+    skillsElement.textContent = 'Skills: ' + (employee.skills.length > 0 ? employee.skills.join(', ') : 'N/A');
+    employeeContainer.appendChild(skillsElement);
+
+    resultsContainer.appendChild(employeeContainer);
+  });
+}
+
+document.getElementById('search').addEventListener('input',(e) => {
+    console.log(e.target.value)
+    
+})
+
+fetchJSONData('https://raw.githubusercontent.com/dixitsoham7/dixitsoham7.github.io/main/index.json');
+  </script>
+</body>
+</html>
